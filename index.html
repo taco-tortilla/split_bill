@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split the bill</title>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- LOGO -->
+        <div id="logo">
+            <embed src="images/logo.svg" class="main_logo">
+            <div class="help" id="help-modal">
+                <button class="button_next" @click="openModal" id="open" data-id="content">
+                    <p>　How To　</p>
+                </button>
+                <!--Modal-->
+                <open-modal v-show="showContent" @close="showContent = false"></open-modal>
+            </div>
+        </div>
+
+        <!-- Count group -->
+        <section id="area_home_groupCount">
+            <p class="title">1. How many group??</p>
+            <!--<input type="number" v-model="groupNum">-->
+            <div class="data-input2">
+                <input type="number" v-model="groupNum" placeholder="Here!">
+                <label for="input1"></label>
+            </div>
+            <div class="direction">
+                <a href="#area_home_peopleCount">
+                    <button-next></button-next>
+                    <!--<img src="images/down_icon.png" class="direction_icon">-->
+                </a>
+            </div>
+        </section>
+
+        <!-- Coutn people of group -->
+        <section id="area_home_peopleCount">
+            <p class="title">2. How many people are in the group??</p>
+            <div v-if="groupNum >=2 && 50 >= groupNum">
+                <div v-for="n in groupNum">
+                    <!--<input type="number" v-model="groupPeopleList[n]" placeholder="Input number."> people-->
+                    <div class="data-input">
+                        <input type="number" v-model="groupPeopleList[n]" placeholder="Here!">
+                        <label for="input1">NO.{{n}}</label>
+                    </div>
+                </div>
+
+                <p>Total <span style="font-size: 150%;">{{sum}}</span> people</p>
+            </div>
+            <div class="direction">
+                <a href="#area_home_proportions">
+                    <button-next></button-next>
+                    <!--<img src="images/down_icon.png" class="direction_icon">-->
+                </a>
+            </div>
+        </section>
+
+        <!-- Select proportions -->
+        <section id="area_home_proportions">
+            <p class="title">3. What about the proportions??</p>
+            <p>Please allocate so that the total is 100% !</p>
+            <div v-if="groupNum >=2 && 50 >= groupNum">
+                <div v-for="n in groupNum">
+                    <!--<input type="number" v-model="groupList[n]" placeholder="Input number."> %-->
+                    <div class="data-input">
+                        <input type="number" v-model="groupList[n]" placeholder="Here!">
+                        <label for="input1">NO.{{n}}</label>
+                    </div>
+                </div>
+            </div>
+            <div v-else>
+                <p sytle="color: red;">🚨⚡⚡⚡💀 That's an unsupported number ! 💀⚡⚡⚡🚨</p>
+            </div>
+            <div class="direction">
+                <a href="#area_home_amount">
+                    <button-next></button-next>
+                    <!--<img src="images/down_icon.png" class="direction_icon">-->
+                </a>
+            </div>
+        </section>
+
+        <!-- Input mount -->
+        <section id="area_home_amount">
+            <p class="title">4. Please enter an amount.</p>
+            <div>
+                <!--<input type="number" v-model="amount" placeholder="Input a amount.">-->
+                <div class="data-input">
+                    <input type="number" v-model="amount" placeholder="Here!">
+                    <label for="input1">　¥　</label>
+                </div>
+            </div>
+            <div class="direction">
+                <a href="#area_home_result">
+                    <button-next></button-next>
+                    <!--<img src="images/down_icon.png" class="direction_icon">-->
+                </a>
+            </div>
+        </section>
+
+        <!-- Result -->
+        <section id="area_home_result">
+            <p class="title">5. Result of split!!!</p>
+            <div hidden>{{ calc }}</div>
+            <div class="resultPrint">
+                <div v-if="judge === 2">
+                    <div v-for="n in groupNum" class="result">
+                        <p>No.{{n}} group {{groupList[n]}}% ({{groupPeopleList[n]}} people)</p>
+                        <p class="resultAmount">¥{{resultList[n]}}</p>
+                    </div>
+                </div>
+                <div v-else-if="judge === 1"></div>
+                <div v-else>
+                    <p style="color: red;">🚨⚡⚡⚡💀 The sum of the percentages is not 100%. Please make sure it's 100%.
+                        💀⚡⚡⚡🚨</p>
+                </div>
+            </div>
+            <a href="#logo">
+                <button class="button_next" style="margin-top: 100px;">
+                    <p>Top</p>
+                </button>
+            </a>
+        </section>
+        <footer>
+            <p>© 2022 Taisei Hasegawa.</p>
+        </footer>
+    </div>
+
+    <script>
+        const Split = {
+            data() {
+                return {
+                    peopleNum: 2,
+                    groupNum: 2,
+                    groupList: [],
+                    groupPeopleList: [],
+                    resultList: [],
+                    amount: null,
+                    //judgePeoplenum: 0,
+                    judge: 1,
+                    sumPeople: 0,
+                    showContent: false,
+                }
+            },
+            computed: {
+                calc() {
+                    let percent = 0;
+                    let sumPercent = 0;
+                    for (let i = 1; i <= this.groupNum; i++) {
+                        //金額の計算
+                        percent = this.groupList[i] / 100;
+                        this.resultList[i] = (this.amount * percent) / this.groupPeopleList[i];
+
+
+                        //割合の合計
+                        sumPercent = sumPercent + this.groupList[i];
+                    }
+                    sumPercent === 100 ? this.judge = 2 : this.judge = 0;
+                    return this.resultList;
+                },
+                sum() {
+                    let sum = 0;
+                    for (let i = 1; i <= this.groupNum; i++) {
+                        sum += this.groupPeopleList[i];
+                    }
+                    return this.sumPeople = sum;
+                    /*f(this.sumPeople === 0){
+                        return this.sumPeople = 0;
+                    }else{
+                        return this.sumPeople = sum;
+                    }*/
+                }
+            },
+            methods: {
+                openModal() {
+                    this.showContent = true;
+
+                },
+                closeModal() {
+                    this.showContent = false;
+                }
+            }
+        }
+        const app = Vue.createApp(Split)
+
+        app.component('button-next', {
+            data() {
+                return {
+                }
+            },
+            template: `
+                <button class="button_next">
+                    <p>Next</p>
+                </button>
+            `
+        })
+        app.component('open-modal', {
+            template: `
+                <div id="overlay" v-on:click="$emit('close')">
+                    <div id="content">
+                        <div class="text-right">
+                        </div>
+                        <div>
+                            <section id="step0_waht">
+                                <div class=discription-Area>
+                                    <p class="modal-title" style="color: red;">What can you do?</p>
+                                    <p class="discription">Usually the split is 50/50, right?
+                                        <br>However, there may be situations where one of you wants to pay more.
+                                        <br>In such a case, use this Custom split the bill!</p>
+                                </div>
+                            </section>
+                            <section id="step1">
+                                <div class=discription-Area>
+                                    <p class="modal-title">Step1. How many group?</p>
+                                    <p class="discription">
+                                        You'll need to enter the number of groups you're splitting up here! 
+                                        <br>For example, if you want to divide between men and women, there are two groups.
+                                    </p>
+                                </div>
+                            </section>
+                            <section id="step2">
+                                <div class=discription-Area>
+                                    <p class="modal-title">Step2. How many people are in the group?</p>
+                                    <p class="discription">
+                                        Enter the number of people in each of the groups entered in step1. 
+                                        <br>For example, 2 for boys and 3 for girls.
+                                    </p>
+                                </div>
+                            </section>
+                            <section id="step3">
+                                <div class=discription-Area>
+                                    <p class="modal-title">Step3. What about the proportions?</p>
+                                    <p class="discription">
+                                        Enter the percentage of the amount each group pays for step1 and step2.
+                                        <br>For example, 80% for the men's group, 20% for the women's group.
+                                        <br>Of course, if you set it to 50%50%, it is a normal split.
+                                    </p>
+                                </div>
+                            </section>
+                            <section id="step4">
+                                <div class=discription-Area>
+                                    <p class="modal-title">Step4. Please enter an amount.</p>
+                                    <p class="discription">
+                                        
+                                    </p>
+                                </div>
+                            </section>
+                            <section id="step5">
+                                <div class=discription-Area>
+                                    <p class="modal-title">Step5. Result of split.</p>
+                                    <p class="discription">
+                                        The result will show you the rates each person in each group pays!
+                                    </p>
+                                </div>
+                            </section>
+                            <div v-on:click="$emit('close')" class="btn btn-success" id="close-button"><button class="close-button"><p calss="close">close</p></button></div>
+                        </div>
+                    </div>
+                </div>
+            `
+        })
+
+
+        app.mount('#app')
+    </script>
+    <script>
+        $(function () {
+            //「開く」がクリックされた場合
+            $('#open').on('click', function () {
+                $('body').css('overflow-y', 'hidden');  // 本文の縦スクロールを無効
+            });
+            //「閉じる」がクリックされた場合
+            $('#close-button').on('click', function () {
+                $('body').css('overflow-y', 'auto');     // 本文の縦スクロールを有効
+            });
+            $('#overlay').on('click', function () {
+                $('body').css('overflow-y', 'auto');     // 本文の縦スクロールを有効
+            });
+        });
+
+        var $target;
+        $('#open').on('click', function () {
+            $target = $('#' + $(this).data('id')); // 開く対象のモーダルコンテンツを取得
+            $target.animate({ scrollTop: 0 }, 0);
+        });
+    </script>
+</body>
+
+</html>
