@@ -12,6 +12,13 @@
     <script src="https://unpkg.com/vue@next"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.js"
         integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    
+    <style>
+        a,p{
+            font-family: 'DotGothic16', sans-serif;
+            font-family: 'Press Start 2P', cursive;
+        }
+    </style>
 </head>
 
 <body>
@@ -26,18 +33,18 @@
                 <!--Modal-->
                 <open-modal v-show="showContent" @close="showContent = false"></open-modal>
             </div>
-            <button><a href="index_jp.html">English→Japanese</a></button>
+            <button><a href="index.html">English→Japanese</a></button>
         </div>
 
         <!-- 1 Count group -->
         <section id="area_home_groupCount">
-            <p class="title">1. How many group??</p>
+            <p class="title">1. グループ数を入力してね</p>
             <!--<input type="number" v-model="groupNum">-->
             <div class="data-input2">
                 <input type="number" v-model="groupNum" placeholder="Here!">
                 <label for="input1"></label>
             </div>
-            <div v-if="2 > groupNum"><p sytle="color: red;">🚨⚡⚡⚡💀 That's an unsupported number ! 💀⚡⚡⚡🚨</p></div>
+            <div v-if="2 > groupNum"><p sytle="color: red;">🚨⚡⚡⚡💀 対応していない値です！再入力してください！ 💀⚡⚡⚡🚨</p></div>
             <div class="direction">
                 <a href="#area_home_gropuName">
                     <button-next></button-next>
@@ -48,7 +55,7 @@
 
         <!-- 2 Input group name  -->
         <section id="area_home_gropuName">
-            <p class="title">2. Input group name !!</p>
+            <p class="title">2. グループの名前を入力してね</p>
             <div v-if="groupNum >=2 && 50 >= groupNum">
                 <div v-for="n in groupNum">
                     <!--<input type="number" v-model="groupPeopleList[n]" placeholder="Input number."> people-->
@@ -68,7 +75,7 @@
 
         <!-- 3 Coutn people of group -->
         <section id="area_home_peopleCount">
-            <p class="title">3. How many people are in the group??</p>
+            <p class="title">3. 各グループに何人いる？？</p>
             <div v-if="groupNum >=2 && 50 >= groupNum">
                 <div v-for="n in groupNum">
                     <!--<input type="number" v-model="groupPeopleList[n]" placeholder="Input number."> people-->
@@ -77,10 +84,10 @@
                         <input type="number" v-model="groupPeopleList[n]" placeholder="Here!">
                         <label for="input1">People</label>
                     </div>
-                    <div v-if="0 > groupPeopleList[n]"><p sytle="color: red;">🚨⚡⚡⚡💀 That's an unsupported number ! 💀⚡⚡⚡🚨</p></div>
+                    <div v-if="0 > groupPeopleList[n]"><p sytle="color: red;">🚨⚡⚡⚡💀 対応していない値です！再入力してください！ 💀⚡⚡⚡🚨</p></div>
                 </div>
 
-                <p>Total <span style="font-size: 150%;">{{sum}}</span> people</p>
+                <p>合計 <span style="font-size: 150%;">{{sum}}</span> 人</p>
             </div>
             <div class="direction">
                 <a href="#area_home_proportions">
@@ -92,8 +99,8 @@
 
         <!-- 4 Select proportions -->
         <section id="area_home_proportions">
-            <p class="title">4. What about the proportions??</p>
-            <p>Please allocate so that the total is 100% !</p>
+            <p class="title">4. 各グループの支払い割合は？？</p>
+            <p>合計100％になるようにしてください！</p>
             <div v-if="groupNum >=2 && 50 >= groupNum">
                 <div v-for="n in groupNum">
                     <!--<input type="number" v-model="groupList[n]" placeholder="Input number."> %-->
@@ -102,11 +109,11 @@
                         <input type="number" v-model="groupList[n]" placeholder="Here!">
                         <label for="input1">　%　</label>
                     </div>
-                    <div v-if="0 > groupList[n] || groupList[n] > 100"><p sytle="color: red;">🚨⚡⚡⚡💀 That's an unsupported number ! 💀⚡⚡⚡🚨</p></div>
+                    <div v-if="0 > groupList[n] || groupList[n] > 100"><p sytle="color: red;">🚨⚡⚡⚡💀 対応していない値です！再入力してください！ 💀⚡⚡⚡🚨</p></div>
                 </div>
             </div>
             <div v-else>
-                <p sytle="color: red;">🚨⚡⚡⚡💀 That's an unsupported number ! 💀⚡⚡⚡🚨</p>
+                <p sytle="color: red;">🚨⚡⚡⚡💀 対応していない値です！再入力してください！ 💀⚡⚡⚡🚨</p>
             </div>
             <div class="direction">
                 <a href="#area_home_amount">
@@ -118,14 +125,14 @@
 
         <!-- 5 Input mount -->
         <section id="area_home_amount">
-            <p class="title">5. Please enter an amount.</p>
+            <p class="title">5. 金額を入力してね</p>
             <div>
                 <!--<input type="number" v-model="amount" placeholder="Input a amount.">-->
                 <div class="data-input">
                     <input type="number" v-model="amount" placeholder="Here!">
                     <label for="input1">　¥　</label>
                 </div>
-                <div v-if="0 > amount"><p sytle="color: red;">🚨⚡⚡⚡💀 That's an unsupported number ! 💀⚡⚡⚡🚨</p></div>
+                <div v-if="0 > amount"><p sytle="color: red;">🚨⚡⚡⚡💀 対応していない値です！再入力してください！ 💀⚡⚡⚡🚨</p></div>
             </div>
             <div class="direction">
                 <a href="#area_home_result">
@@ -148,7 +155,7 @@
                 </div>
                 <div v-else-if="judge === 1"></div>
                 <div v-else>
-                    <p style="color: red;">🚨⚡⚡⚡💀 The sum of the percentages is not 100%. Please make sure it's 100%.
+                    <p style="color: red;">🚨⚡⚡⚡💀 パーセントの合計が100%になっていません！合計100％になるようにしてください！
                         💀⚡⚡⚡🚨</p>
                 </div>
             </div>
