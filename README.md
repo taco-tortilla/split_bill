@@ -1,6 +1,2 @@
-# split the bill
-- aa
-``` 
-aaa
-```
-# 1. aaa
+# Custom split the bill
+https://taco-tortilla.github.io/split_bill/
